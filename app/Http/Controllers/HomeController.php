@@ -36,8 +36,8 @@ class HomeController extends Controller
 
     public function checkNumber(Request $request)
     {
-        $sid = "AC64f2f6ac96ea0f89301e484412734402";
-        $token = "5e585186d66b991b694c43017a555192";
+        $sid = $_ENV['TWILIO_ACCOUNT_SID'];
+        $token = $_ENV['TWILIO_AUTH_TOKEN'];
         $client = new \Lookups_Services_Twilio($sid, $token);
 
 // Make a call to the Lookup API
