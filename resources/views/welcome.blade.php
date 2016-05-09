@@ -25,14 +25,15 @@
         </div>
         <button type="button" class="btn btn-primary" onclick="checkNumber();">Send Text</button>
     </form>
+    <div id="result"></div>
 </div>
 <script>
     function checkNumber() {
         var token = $("input[name='_token']").val();
         var phone = $("#phone").val();
-        //console.log(token+' phone is '+phone);
         $.post('/checkNumber',{phone:phone, _token: token},function(data){
-            console.log(data);
+            $("#result").html(data);
+            //console.log(data);
         });
     }
     $(document).ready(function() {
@@ -40,8 +41,8 @@
                 $('#phone').intlTelInput({
                     utilsScript: 'js/utils.js',
                     autoPlaceholder: true,
-                    preferredCountries: [],
-                    onlyCountries: ['us', 'ie', 'dk']
+                    preferredCountries: []
+                    //onlyCountries: ['us', 'ie', 'dk']
                 });
 
                 $('#phoneForm')
