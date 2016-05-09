@@ -77,3 +77,5 @@ Route::post('/outbound', function()
     $response->header('Content-Type', 'text/xml');
     return $response;
 });
+
+Route::post('/checkNumber', 'HomeController@checkNumber');

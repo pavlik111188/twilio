@@ -34,6 +34,11 @@ class HomeController extends Controller
 
     }
 
+    public function checkNumber(Request $request)
+    {
+        return $request->phone;
+    }
+
     public function textMess(Request $request) {
         // Get form inputs
         //dd($request);

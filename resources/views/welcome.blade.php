@@ -21,13 +21,20 @@
     <form id="phoneForm" role="form">
         {!! csrf_field() !!}
         <div class="form-group">
-            <label for="phone">Phone Number</label>
             <input type="tel" class="form-control" id="phone">
         </div>
-        <button type="submit" class="btn btn-primary">Send Text</button>
+        <button type="button" class="btn btn-primary" onclick="checkNumber();">Send Text</button>
     </form>
 </div>
 <script>
+    function checkNumber() {
+        var token = $("input[name='_token']").val();
+        var phone = $("#phone").val();
+        //console.log(token+' phone is '+phone);
+        $.post('/checkNumber',{phone:phone, _token: token},function(data){
+            console.log(data);
+        });
+    }
     $(document).ready(function() {
         (function($) {
                 $('#phone').intlTelInput({
