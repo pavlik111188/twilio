@@ -29,11 +29,33 @@ class HomeController extends Controller
     }
     public function index()
     {
-        if(\Auth::check()) {
-            return redirect('/plans');
-        }
-        else {
+            //Twilio::message('+18085551212', 'Pink Elephants and Happy Rainbows');
             return view('welcome');
-        }
+
+    }
+
+    public function textMess(Request $request) {
+        // Get form inputs
+        //dd($request);
+        //return $request->phoneNumber;
+        $number = \Input::get('phoneNumber');
+        $message = \Input::get('message');
+
+        // Create an authenticated client for the Twilio API
+        $client = new \Services_Twilio('AC64f2f6ac96ea0f89301e484412734402', '5e585186d66b991b694c43017a555192');
+        try {
+            // Use the Twilio REST API client to send a text message
+            $m = $client->account->messages->sendMessage(
+                '+15807012741', // the text will be sent from your Twilio number
+                '+12015550123', // the phone number the text will be sent to
+                'hi' // the body of the text message
+            );
+        } catch(Services_Twilio_RestException $e) {
+            // Return and render the exception object, or handle the error as needed
+            return $e;
+        };
+
+        // Return the message object to the browser as JSON
+        return $m;
     }
 }

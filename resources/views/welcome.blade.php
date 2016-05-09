@@ -1,45 +1,68 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <title>Laravel</title>
-
-        <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
-
-        <style>
-            html, body {
-                height: 100%;
-            }
-
-            body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                display: table;
-                font-weight: 100;
-                font-family: 'Lato';
-            }
-
-            .container {
-                text-align: center;
-                display: table-cell;
-                vertical-align: middle;
-            }
-
-            .content {
-                text-align: center;
-                display: inline-block;
-            }
-
-            .title {
-                font-size: 96px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="content">
-                <div class="title">Laravel 5 New</div>
-            </div>
+<head>
+    <title>Send A Text</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/intlTelInput.css" />
+    <link rel="stylesheet" href="css/formValidation.min.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" type="text/javascript"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript">
+        var $jq1_11 = jQuery.noConflict(true);
+    </script>
+    <script src="js/formValidation.min.js" type="text/javascript"></script>
+    <script src="js/intlTelInput.min.js" type="text/javascript"></script>
+    <script src="js/bootstrap.min.js" type="text/javascript"></script>
+</head>
+<body>
+<div class="container">
+    <h1>Type a phone number</h1>
+    <form id="phoneForm" role="form">
+        {!! csrf_field() !!}
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" class="form-control" id="phone">
         </div>
-    </body>
+        <button type="submit" class="btn btn-primary">Send Text</button>
+    </form>
+</div>
+<script>
+    $(document).ready(function() {
+        (function($) {
+                $('#phone').intlTelInput({
+                    utilsScript: 'js/utils.js',
+                    autoPlaceholder: true,
+                    preferredCountries: ['gb', 'us', 'fr']
+                });
+
+                $('#phoneForm')
+                    .formValidation({
+                        framework: 'bootstrap',
+                        icon: {
+                            valid: 'glyphicon glyphicon-ok',
+                            invalid: 'glyphicon glyphicon-remove',
+                            validating: 'glyphicon glyphicon-refresh'
+                        },
+                        fields: {
+                            phoneNumber: {
+                                validators: {
+                                    callback: {
+                                        message: 'The phone number is not valid',
+                                        callback: function(value, validator, $field) {
+                                            return value === '' || $field.intlTelInput('isValidNumber');
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    })
+                // Revalidate the number when changing the country
+                    .on('click', '.country-list', function() {
+                        $('#phoneForm').formValidation('revalidateField', 'phoneNumber');
+                    });
+        }($jq1_11));
+    });
+</script>
+</body>
 </html>

@@ -147,6 +147,8 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Collective\Bus\BusServiceProvider::class,
+        //Aloha\Twilio\TwilioServiceProvider::class,
         //Twilio\Laravel5TwilioServiceProvider::class,
 
         /*
@@ -202,6 +204,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Input' => Illuminate\Support\Facades\Input::class,
+        //'Twilio' => Aloha\Twilio\Facades\Twilio::class,
         //'Twilio'    => Twilio\Facades\Twilio::class,
 
     ],

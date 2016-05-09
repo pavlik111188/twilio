@@ -14,5 +14,66 @@
 /*Route::get('/', function () {
     return view('welcome');
 });*/
+Route::match(array('GET', 'POST'), '/incoming', function()
+{
+    $twiml = new Services_Twilio_Twiml();
+    $twiml->say('Hello - your app just answered the phone. Neat, eh?', array('voice' => 'alice'));
+    $response = Response::make($twiml, 200);
+    $response->header('Content-Type', 'text/xml');
+    return $response;
+});
 Route::auth();
-Route::get('/', 'HomeController@index');
+//Route::get('/', 'HomeController@index');
+Route::get('/', function()
+{
+    return View::make('welcome');
+});
+Route::post('/text', 'HomeController@textMess');
+// POST URL to handle form submission and make outbound call
+Route::post('/call', function()
+{
+    // Get form input
+    $number = Input::get('phoneNumber');
+
+    // Set URL for outbound call - this should be your public server URL
+    //$host = parse_url(Request::url(), PHP_URL_HOST);
+    $url = 'http://twilio.loc/outbound';
+
+    // Create authenticated REST client using account credentials in
+    // <project root dir>/.env.php
+    $client = new Services_Twilio(
+        $_ENV['TWILIO_ACCOUNT_SID'],
+        $_ENV['TWILIO_AUTH_TOKEN']
+    );
+
+    try {
+        // Place an outbound call
+        $call = $client->account->calls->create(
+            $_ENV['TWILIO_NUMBER'], // A Twilio number in your account
+            $number, // The visitor's phone number
+            $url
+        );
+    } catch (Exception $e) {
+        // Failed calls will throw
+        return $e;
+    }
+
+    // return a JSON response
+    return array('message' => 'Call incoming!');
+});
+// POST URL to handle form submission and make outbound call
+Route::post('/outbound', function()
+{
+    // A message for Twilio's TTS engine to repeat
+    $sayMessage = 'Thanks for contacting our sales department. If this were a
+        real click to call application, we would redirect your call to our
+        sales team right now using the Dial tag.';
+
+    $twiml = new Services_Twilio_Twiml();
+    $twiml->say($sayMessage, array('voice' => 'alice'));
+    // $response->dial('+16518675309');
+
+    $response = Response::make($twiml, 200);
+    $response->header('Content-Type', 'text/xml');
+    return $response;
+});
