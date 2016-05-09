@@ -33,7 +33,8 @@
                 $('#phone').intlTelInput({
                     utilsScript: 'js/utils.js',
                     autoPlaceholder: true,
-                    preferredCountries: ['gb', 'us', 'fr']
+                    preferredCountries: [],
+                    onlyCountries: ['us', 'ie', 'dk']
                 });
 
                 $('#phoneForm')
