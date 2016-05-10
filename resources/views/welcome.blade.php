@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>Send A Text</title>
+    <title>Check a number</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/intlTelInput.css" />

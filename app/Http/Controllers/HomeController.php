@@ -34,19 +34,6 @@ class HomeController extends Controller
 
     }
 
-    public function checkNumber(Request $request)
-    {
-        $sid = $_ENV['TWILIO_ACCOUNT_SID'];
-        $token = $_ENV['TWILIO_AUTH_TOKEN'];
-        $client = new \Lookups_Services_Twilio($sid, $token);
-
-// Make a call to the Lookup API
-        $number = $client->phone_numbers->get($request->phone, array("CountryCode" => "US", "Type" => "carrier"));
-
-// Log the carrier type and name
-        //echo $number->carrier->type . "\r\n"; // => mobile
-        return "Type: ".$number->carrier->type . "<br /> Operator: ".$number->carrier->name; // => Sprint Spectrum, L.P.
-    }
 
     public function textMess(Request $request) {
         // Get form inputs
@@ -71,5 +58,51 @@ class HomeController extends Controller
 
         // Return the message object to the browser as JSON
         return $m;
+    }
+
+    public function isValidNumber($number) {
+        $sid = $_ENV['TWILIO_ACCOUNT_SID'];
+        $token = $_ENV['TWILIO_AUTH_TOKEN'];
+        $client = new \Lookups_Services_Twilio($sid, $token);
+        try {
+            $number = $client->phone_numbers->get($number, array("CountryCode" => "US", "Type" => "carrier"));
+            //dd($number->getMessage());
+            $number->carrier->type;
+            return true;
+        }
+        catch (Exception $e) {
+            if($e->getMessage() == 404) {
+                return false;
+            } else {
+                throw $e;
+            }
+        }
+    }
+
+    public function checkNumber(Request $request)
+    {
+        if ($this->isValidNumber($request->phone)) {
+            echo "Phone number is valid";
+        } else {
+            echo "Phone number is not valid";
+        }
+        /*$sid = $_ENV['TWILIO_ACCOUNT_SID'];
+        $token = $_ENV['TWILIO_AUTH_TOKEN'];
+        $client = new \Lookups_Services_Twilio($sid, $token);
+        try {
+            $number = $client->phone_numbers->get($request->phone, array("CountryCode" => "US", "Type" => "carrier"));
+            //$number->carrier->type;
+            dd($number);
+            return "Phone number: ". $number->phone_number ."<br /> Type: ".$number->carrier->type . "<br /> Operator: ".$number->carrier->name;
+        }
+        catch (Exception $e) {
+            if($e->getStatus() == 404) {
+                return false;
+            } else {
+                throw $e;
+            }
+        }*/
+        //$number = $client->phone_numbers->get($request->phone, array("CountryCode" => "US", "Type" => "carrier"));
+        //return "Phone number: ". $number->phone_number ."<br /> Type: ".$number->carrier->type . "<br /> Operator: ".$number->carrier->name; // => Sprint Spectrum, L.P.
     }
 }
