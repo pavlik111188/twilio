@@ -60,28 +60,47 @@ class HomeController extends Controller
         return $m;
     }
 
-    public function isValidNumber($number) {
-        $sid = $_ENV['TWILIO_ACCOUNT_SID'];
-        $token = $_ENV['TWILIO_AUTH_TOKEN'];
-        $client = new \Lookups_Services_Twilio($sid, $token);
-            //$number = $client->phone_numbers->get($number, array("CountryCode" => "US", "Type" => "carrier"));
+    public function buyNumber(Request $request) {
+        $accountSid = $_ENV['TWILIO_ACCOUNT_SID'];
+        $authToken = $_ENV['TWILIO_AUTH_TOKEN'];
+
+        $client = new \Services_Twilio($accountSid, $authToken);
         try {
-            $number = $client->phone_numbers->get($number, array("CountryCode" => "US", "Type" => "carrier"));
-            return $number->phone_number;
-        } catch ( \Services_Twilio_RestException $e ) {
-            //elog( 'EACT', $e->getMessage(  ) , __FUNCTION__ );
-            return false;
+            $phoneNumber = $request->phone;
+            $purchasedNumber = $client->account->incoming_phone_numbers->create(array('PhoneNumber' => $phoneNumber));
+
+            echo $purchasedNumber->sid;
         }
+        catch ( \Services_Twilio_RestException $e ) {
+            echo $e->getMessage();
+        }
+
     }
 
     public function checkNumber(Request $request)
     {
         //return $this->isValidNumber($request->phone);
-        if ($this->isValidNumber($request->phone)) {
+        $sid = $_ENV['TWILIO_ACCOUNT_SID'];
+        $token = $_ENV['TWILIO_AUTH_TOKEN'];
+        $client = new \Lookups_Services_Twilio($sid, $token);
+        //$number = $client->phone_numbers->get($number, array("CountryCode" => "US", "Type" => "carrier"));
+        try {
+            $number = $client->phone_numbers->get($request->phone, array("CountryCode" => "US", "Type" => "carrier"));
+            return $number->phone_number;
+        } catch ( \Services_Twilio_RestException $e ) {
+            $clientNew = new \Services_Twilio($sid, $token);
+            $numbersNew = $clientNew->account->available_phone_numbers->getList('US', 'Local', array(
+                "AreaCode" => "510"
+            ));
+            foreach($numbersNew->available_phone_numbers as $number) {
+                echo "<br />".$number->phone_number. "<button class='btn-warning' onclick='buyNumber(".$number->phone_number.");'>Buy</button>";
+            }
+        }
+        /*if ($this->isValidNumber($request->phone)) {
             return $this->isValidNumber($request->phone);
         } else {
-            echo "Phone number is not valid";
-        }
+            return $this->isValidNumber($request->phone);
+        }*/
         /*$sid = $_ENV['TWILIO_ACCOUNT_SID'];
         $token = $_ENV['TWILIO_AUTH_TOKEN'];
         $client = new \Lookups_Services_Twilio($sid, $token);

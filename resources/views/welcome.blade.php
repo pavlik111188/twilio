@@ -26,6 +26,10 @@
         <button type="button" class="btn btn-primary" onclick="checkNumber();">Send Text</button>
     </form>
     <div id="result"></div>
+
+    <p>
+        <button class="btn btn-group" onclick="callNumber();">Call</button>
+    </p>
 </div>
 <script>
     function checkNumber() {
@@ -33,12 +37,19 @@
         var phone = $("#phone").val();
         $.post('/checkNumber',{phone:phone, _token: token},function(data){
             $("#result").html(data);
-            if(data) {
-                console.log(data);
-            }
-            else {
-                console.log("error");
-            }
+        });
+    }
+    function callNumber() {
+        var token = $("input[name='_token']").val();
+        var phone = $("#phone").val();
+        $.post('/callNumber',{phone:phone, _token: token},function(data){
+            $("#result").html(data);
+        });
+    }
+    function buyNumber(phone) {
+        var token = $("input[name='_token']").val();
+        $.post('/buyNumber',{phone:phone, _token: token},function(data){
+            $("#result").html(data);
         });
     }
     $(document).ready(function() {
