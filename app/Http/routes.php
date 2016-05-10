@@ -31,3 +31,4 @@ Route::get('/', function()
 Route::post('/text', 'HomeController@textMess');
 Route::post('/checkNumber', 'HomeController@checkNumber');
 Route::post('/buyNumber', 'HomeController@buyNumber');
+Route::post('/callNumber', 'HomeController@callNumber');

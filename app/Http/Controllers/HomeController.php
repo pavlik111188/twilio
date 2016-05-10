@@ -77,6 +77,58 @@ class HomeController extends Controller
 
     }
 
+    public function callNumber(Request $request) {
+        $accountSid = $_ENV['TWILIO_ACCOUNT_SID'];
+        $authToken = $_ENV['TWILIO_AUTH_TOKEN'];
+
+        $client = new \Services_Twilio($accountSid, $authToken);
+        $version = "2010-04-01";
+
+// Set your account ID and authentication token.
+        $sid = $_ENV['TWILIO_ACCOUNT_SID'];
+        $token = $_ENV['TWILIO_AUTH_TOKEN'];
+
+// The number of the phone initiating the the call.
+// (Must be previously validated with Twilio.)
+        $from_number = "NNNNNNNNNNN";
+
+// The number of the phone receiving call.
+        $to_number = "NNNNNNNNNNN";
+
+// Use the Twilio-provided site for the TwiML response.
+        $url = "http://twimlets.com/message";
+
+// The phone message text.
+        $message = "Hello world.";
+
+// Create the call client.
+        $client = new Services_Twilio($sid, $token, $version);
+
+//Make the call.
+        try
+        {
+            $call = $client->account->calls->create(
+                $from_number,
+                $to_number,
+                $url.'?Message='.urlencode($message)
+            );
+        }
+        catch (Exception $e)
+        {
+            echo 'Error: ' . $e->getMessage();
+        }
+        try {
+            $phoneNumber = $request->phone;
+            $purchasedNumber = $client->account->incoming_phone_numbers->create(array('PhoneNumber' => $phoneNumber));
+
+            echo $purchasedNumber->sid;
+        }
+        catch ( \Services_Twilio_RestException $e ) {
+            echo $e->getMessage();
+        }
+
+    }
+
     public function checkNumber(Request $request)
     {
         //return $this->isValidNumber($request->phone);
