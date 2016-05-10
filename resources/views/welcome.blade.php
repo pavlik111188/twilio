@@ -33,7 +33,12 @@
         var phone = $("#phone").val();
         $.post('/checkNumber',{phone:phone, _token: token},function(data){
             $("#result").html(data);
-            //console.log(data);
+            if(data) {
+                console.log(data);
+            }
+            else {
+                console.log("error");
+            }
         });
     }
     $(document).ready(function() {
